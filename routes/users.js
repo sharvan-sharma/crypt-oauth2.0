@@ -1,9 +1,59 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express');
+const appRoot = require('app-root-path');
+const userpassport = require(`../src/config/userPassport`);
+const winslog = require('../src/config/winston');
+const user = require('../routes/route_utils/user_utils/index')
 
-/* GET users listing. */
-router.get('/', function(req, res, next) {
-  res.send('respond with a resource');
-});
+const router = express.Router();
+
+router.all('/', (req, res) => console.log('welcome to crypt api server'))
+
+router.route('/checkusername')
+    .post(user.CheckUserName)
+
+router.route('/checkemail')
+    .post(user.CheckEmail)
+
+router.route('/register')
+    .post(user.Register)
+
+router.route('/verifyemail')
+    .get(user.VerifyEmail,
+        userpassport.authenticate('local', {
+            successRedirect: '/loginsuccess',
+            failureRedirect: '/loginfail'
+        }))
+
+router.route('/login')
+    .post(userpassport.authenticate('local', {
+        successRedirect: '/loginsuccess',
+        failureRedirect: '/loginfail'
+    }));
+
+router.route('/loginsuccess')
+    .get(user.SetActive)
+
+router.route('/loginfail')
+    .get((req, res) => res.json({
+        status: 401,
+        user: null
+    }))
+
+router.route('/forgotpwd')
+    .post(user.PasswordResetEmail)
+
+router.route('/verifypasswordreset')
+    .get(user.VerifyPasswordResetEmail)
+
+router.route('/changepassword')
+    .post(user.ResetPassword,
+        userpassport.authenticate('local', {
+            successRedirect: '/loginsuccess',
+            failureRedirect: '/loginfail'
+        }))
+
+router.route('/logout')
+    .get(user.Logout);
+
 
 module.exports = router;

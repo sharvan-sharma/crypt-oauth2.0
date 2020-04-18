@@ -9,8 +9,7 @@ const MongoStore = require('connect-mongo')(session);
 const cors = require('cors');
 
 const winslog = require('./appbin/config/winston');
-const indexRouter = require('./routes/index');
-const usersRouter = require('./routes/users');
+const router = require('./routes/index');
 const dbConnection = require('./appbin/config/dbConnect');
 const userpassport = require('./appbin/config/userPassport');
 
@@ -42,8 +41,10 @@ app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
+app.use('/', router.users);
+app.use('/oauth',router.oauth);
+app.use('/api',router.api);
+app.use('/client',router.client)
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

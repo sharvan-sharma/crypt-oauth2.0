@@ -1,0 +1,22 @@
+<!---->
+<%- include('header') -%>
+<!--display area-->
+<!--forms area-->
+    <div class="container-fluid" style='height:100vh;width:100%'>
+        <div class="row mx-0 d-flex justify-content-center align-items-center ">
+            <div class="col-12 col-md-6 col-lg-4 col-xl-3 d-flex flex-column p-1">
+                <!--login form-->
+
+                <%- include('login',{transaction_id:transaction_id}) -%>
+
+                <!--sign up form-->
+
+                <%- include('signup',{transaction_id:transaction_id}) -%>
+
+            </div>
+        </div>
+    </div>
+  
+
+    <!--footer ejs-->
+    <%- include('footer') -%>
