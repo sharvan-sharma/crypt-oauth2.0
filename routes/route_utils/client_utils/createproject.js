@@ -41,7 +41,8 @@ function createProject(req, res, next) {
                     dev_id: req.user._id,
                     projectname,
                     response_type,
-                    scope
+                    scope,
+                    type
                 }, (err, clientdoc) => {
                     if (err) {
                         res.json({

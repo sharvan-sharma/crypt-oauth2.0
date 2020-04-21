@@ -8,7 +8,7 @@ function checkEmail(req, res, next) {
         })
     } else {
         User.exists({
-           email
+           email:req.body.email
         }, (err, flag) => {
             if (err) {
                 res.json({

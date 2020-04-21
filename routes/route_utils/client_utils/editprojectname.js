@@ -16,7 +16,6 @@ function editProjectName(req, res, next) {
         }, {
             '$set': {
                 projectname: new_projectname,
-                client_id: project_id + '.' + new_projectname + '-' + 'crypt'
             }
         }, {
             strict: false

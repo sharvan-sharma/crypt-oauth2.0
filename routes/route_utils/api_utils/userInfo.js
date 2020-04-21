@@ -3,22 +3,22 @@
 const User = require('../../../src/config/models/user.model')
 const Client = require('../../../src/config/models/client.model')
 
-function checkClient(client_id, clients_Array) {
+function checkClient(client_id, clientsArray) {
     let promise = new Promise((resolve, reject) => {
         let flag = clientsArray.some((client) => {
                 return client.client_id === client_id
             })
-            (flag) ? resolve(true) : resolve(false)
+        resolve(flag)
     })
     return promise
 }
 
 function userInfo(req, res, next) {
     const {
-        cryptID,
+        cryptId,
         client_id
-    } = req.body
-    if (cryptID === undefined || client_id === undefined) {
+    } = req.body.query
+    if (cryptId === undefined || client_id === undefined) {
         res.json({
             error: 'malformed_request',
             error_description: 'some parmeters are missing',
@@ -34,7 +34,7 @@ function userInfo(req, res, next) {
                 })
             } else if (bool) {
                 User.findOne({
-                    cryptID
+                    cryptId
                 }, {
                     name: 1,
                     email: 1,

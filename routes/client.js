@@ -12,7 +12,7 @@ router.route('/addorigin')
 router.route('/addredirect')
 .post(client.VerifyLoggedIn,client.AddRedirect)
 
-router.route('/generatecredetials')
+router.route('/generatecredentials')
 .post(client.VerifyLoggedIn,client.generateIdAndSecret)
 
 router.route('/editprojectname')
@@ -27,11 +27,17 @@ router.route('/editredirect')
 router.route('/deleteproject')
 .post(client.VerifyLoggedIn,client.DeleteProject)
 
-router.route('/deleteoriginuri')
+router.route('/deleteorigin')
 .post(client.VerifyLoggedIn,client.DeleteOrigin)
 
-router.route('/deleteredirecturi')
+router.route('/deleteredirect')
 .post(client.VerifyLoggedIn,client.DeleteRedirect)
+
+router.route('/deleteallorigins')
+.post(client.VerifyLoggedIn,client.DeleteAllOrigins)
+
+router.route('/deleteallredirects')
+.post(client.VerifyLoggedIn,client.DeleteAllRedirects)
 
 
 

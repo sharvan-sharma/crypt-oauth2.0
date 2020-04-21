@@ -9,7 +9,6 @@ function ResetPassword(req,res,next){
                 res.json({status:500})
             }else{
                 u.save(()=>{
-                    req.body.username = username
                     req.body.password = new_password
                     next()
                 }) 

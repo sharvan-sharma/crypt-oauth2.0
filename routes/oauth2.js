@@ -5,10 +5,7 @@ const router = express.Router()
 
 //firts redirection from client
 router.route('/authorization')
-.get(oauth.ValidateAuthCode,oauth.EnsureLogin)
-
-router.route('/transaction/Authorization')
-.post(oauth.EnsureLogin)
+.post(oauth.ValidateAuthCode,oauth.EnsureLogin)
 
 //decision from  user 
 router.route('/decision')

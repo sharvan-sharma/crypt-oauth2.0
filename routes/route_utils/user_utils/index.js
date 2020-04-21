@@ -7,6 +7,8 @@ const PasswordResetEmail = require('./passwordResetEmail')
 const VerifyEmail = require('./verifyEmail')
 const VerifyPasswordResetEmail = require('./verifypwdresetemail')
 const ResetPassword = require('./resetPassword')
+const RevokeAccess = require('./revokeaccess')
+const ValidateVerify = require('./validateverification')
 
 module.exports = {
     Register,
@@ -17,5 +19,7 @@ module.exports = {
     PasswordResetEmail,
     VerifyEmail,
     VerifyPasswordResetEmail,
-    ResetPassword
+    ResetPassword,
+    RevokeAccess,
+    ValidateVerify
 }

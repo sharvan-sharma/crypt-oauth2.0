@@ -11,20 +11,23 @@ const setActive = (req, res, next) => {
             }
         }, {
             strict: false
-        }, (err) => {
+        }, (err,doc) => {
             if (err) {
                 res.json({
                     error: 'server_error'
                 })
-            } else {
+            } else if(doc) {
                 winslog.log({
                     level: 'info',
-                    message: req.user.username + " is the new login entry.total users are " + count
+                    message: req.user.username + " is the new login entry.total users are "
                 });
                 res.json({
                     status: 200,
-                    user: req.user.username
+                    user: req.user.username,
+                    transaction_id:doc.toObject().transaction_id
                 })
+            }else{
+                res.json({error:'no user exists'})
             }
         })
     } else {

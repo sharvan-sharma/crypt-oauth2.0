@@ -11,8 +11,8 @@ const generateSecret = (secretLength, cb) => {
     }
 }
 
-const generator = (clientdocid, appname, cb) => {
-    const ClientID = clientdocid + '.' + appname + '-' + 'crypt'
+const generator = (clientdocid, type, cb) => {
+    const ClientID = clientdocid + '.clientapplication-'+type+'-crypt'
     generateSecret(24, (ClientSecret) => {
         cb(ClientID, ClientSecret)
     })
@@ -21,13 +21,13 @@ const generator = (clientdocid, appname, cb) => {
 function generateCredentials(req, res, next) {
     Client.findOne({
         dev_id: req.user._id,
-        projectname: req.body.projectname
+        _id: req.body.project_id
     }, (err, doc) => {
         if (err) {
             res.json({
                 error: 'server_error'
             })
-        } else {
+        } else if(doc) {
             const document = doc.toObject()
             if (document.OriginURIs === undefined || document.RedirectURIs === undefined) {
                 res.json({
@@ -38,7 +38,7 @@ function generateCredentials(req, res, next) {
                     error: 'uris are not specified'
                 })
             } else {
-                generator(document._id, document.projectname, (client_id, client_secret) => {
+                generator(document._id,document.type, (client_id, client_secret) => {
                     Client.findOneAndUpdate({
                         dev_id: req.user._id,
                         projectname: document.projectname
@@ -47,19 +47,23 @@ function generateCredentials(req, res, next) {
                             client_id,
                             client_secret
                         }
-                    }, (err) => {
+                    },{strict:false}, (err,clientdoc) => {
                         if (err) {
                             res.json({
                                 error: 'server_error'
                             })
-                        } else {
+                        } else if(clientdoc){
                             res.json({
                                 status: 200
                             })
+                        }else{
+                            res.json({error:'client doesnot exists'})
                         }
                     })
                 })
             }
+        }else{
+            res.json({error:'client doesnot exits for this dev'})
         }
     })
 }

@@ -10,11 +10,12 @@ function sendAuthCode(req, res, next) {
     const {
         transaction_id,
         decision
-    } = req.body
-
-    if (decision === 'allow') {
+    } = req.body.query
+    if(transaction_id === undefined && decision === undefined){
+        res.json({error:'parameters_missing'})
+    }else if (decision === "allow") {
         Transaction.findOneAndDelete({
-            transaction_id
+           _id:transaction_id
         }, (err, document) => {
             if (err) {
                 res.json({
@@ -22,30 +23,31 @@ function sendAuthCode(req, res, next) {
                     error_description: 'error encountered at server',
                     error_uri: process.env.ERROR_URI
                 })
-            }else{
+            }else if(document){
                 const {
                     client_id,
                     redirect_uri,
                     state
-                } = document
+                } = document.toObject()
                 
                 const newDateobj = new Date(new Date().getTime() + 600000)
+                
+                let promise1 =  User.findOne({
+                    _id: req.user._id
+                },{approved_clients:1}).exec()
                 //creating an auth code
-                Authorization.create({
+                let promise2 = Authorization.create({
                     client_id,
-                    user: req.user._id,
+                    user_id: req.user._id,
                     redirect_uri,
                     used: false,
                     expiresAt: newDateobj
-                }, (err, document) => {
-                    if (err) {
-                        res.json({
-                            error: 'server_error',
-                            error_description: 'error encountered at server',
-                            error_uri: process.env.ERROR_URI
-                        })
-                    } else {
-                        jwt.sign({
+                })
+                
+                Promise.all([promise1,promise2])
+                .then(resarr=>{
+                    const doc = resarr[1]
+                     jwt.sign({
                             id: doc._id
                         }, process.env.AUTH_SECRET, {
                             expiresIn: 600
@@ -59,39 +61,60 @@ function sendAuthCode(req, res, next) {
                             } else {
                                 res.json({
                                     code: token,
-                                    state
+                                    state,
+                                    redirect_uri
                                 })
                             }
                         })
+                    var check = resarr[0].toObject().approved_clients.every(ele=>{
+                                    if(ele.client_id !== client_id){
+                                        return true
+                                    }else{
+                                        return false
+                                    }
+                                })
+                    
+                    if(check){
+                        User.findOneAndUpdate({_id:req.user._id},{
+                            '$push':{
+                                'approved_clients':{
+                                    client_id
+                                }
+                            }
+                        },(err,doc)=>{
+                            if(err){
+                                console.log('error')
+                            }
+                        })
                     }
-                })
-                //adding client to approved clients for user
-                User.findOneAndUpdate({
-                    _id: req.user._id
-                }, {
-                    '$push': {
-                        'approved_clients': {
-                            client_id
-                        }
-                    }
-                })
+                }).catch(err=>{
+                    res.json({error:'server_error',
+                            error_description: 'error encountered at server',
+                            error_uri: process.env.ERROR_URI})
+                }) 
+            }else{
+                res.json({error:'paramater values doesnot exists'})
             }
         })
     } else {
         Transaction.findOneAndDelete({
-            transaction_id
-        }, (err, doc) => {
-            if (err) {
+            _id:transaction_id
+        }, (err) => {
+            if (err , doc) {
                 res.json({
                     error: 'server_error',
                     error_description: 'error encountered at server',
                     error_uri: process.env.ERROR_URI
                 })
-            } else {
+            } else if(doc) {
                 res.json({
                     error: 'access_denied',
                     error_description: 'user denied the request',
                     error_uri: process.env.ERROR_URI
+                })
+            } else{
+                res.json({
+                    error:'transaction doesnot exists'
                 })
             }
         })

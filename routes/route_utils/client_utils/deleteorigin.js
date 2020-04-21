@@ -7,10 +7,11 @@ function deleteorigin(req,res,next){
     }else{
         Client.findOneAndUpdate({dev_id:req.user._id,_id:project_id},
                                  {'$pull':{
-                                     'OriginURIs':{$elemMatch: {_id:uri_id}}
-                                 }},(err)=>{
+                                     'OriginURIs':{_id:uri_id}
+                                 }},(err,doc)=>{
                                      if(err){res.json({error:'server_error'})}
-                                     else{res.json({status:200})}
+                                     else if(doc){res.json({status:200})}
+                                     else{res.json({error:'uri doesnot exists'})}
                                  })
     }
 }

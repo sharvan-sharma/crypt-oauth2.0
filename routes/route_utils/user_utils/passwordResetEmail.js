@@ -2,12 +2,7 @@ const utils = require('../../../src/utils/index')
 const User = require('../../../src/config/models/user.model')
 
 function passwordResetEmail(req, res, next) {
-    User.findOne({
-        email: req.body.email
-    }, {
-        username,
-        name
-    }, (err, doc) => {
+    User.findOne({ email: req.body.email}, {username:1,name:1}, (err, doc) => {
         if (err) {
             res.json({
                 error: 'server_error'
@@ -19,7 +14,7 @@ function passwordResetEmail(req, res, next) {
                 email: req.body.email
             }
             utils.PasswordResetEmail(user, (v) => {
-                if (v == 0) {
+                if (v === 0) {
                     res.json({
                         status: 500,
                         error: 'server_error'

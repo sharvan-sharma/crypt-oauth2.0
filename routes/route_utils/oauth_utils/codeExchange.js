@@ -5,7 +5,10 @@ const Authorization = require('../../../src/config/models/authcodes.model')
 const User = require('../../../src/config/models/user.model')
 
 function codeExchange(req,res,next){
-    jwt.verify(req.body.code,process.env.AUTH_CODE,(err,payload)=>{
+    if(req.body.query.code === undefined){
+        res.json({error:'parameter_missing'})
+    }else{
+    jwt.verify(req.body.query.code,process.env.AUTH_SECRET,(err,payload)=>{
         if(err){
             if(err.name === 'TokenExpiredError'){
                 res.json({
@@ -30,7 +33,7 @@ function codeExchange(req,res,next){
                     })
                 }else{
                     if(document.used === false){
-                        User.findOne({_id:document.user_id},{cryptID:1},(err,doc)=>{
+                        User.findOne({_id:document.user_id},{cryptId:1},(err,doc)=>{
                             if(err){
                                 res.json({
                                     error:'server_error'
@@ -38,7 +41,7 @@ function codeExchange(req,res,next){
                                     ,error_uri:process.env.ERROR_EXCHANGE
                                 })
                             }else{
-                                res.json({cryptID:doc.cryptID})
+                                res.json({cryptId:doc.cryptId})
                             }
                         })
                     }else{
@@ -52,6 +55,7 @@ function codeExchange(req,res,next){
             })
         }
     })
+}
 }
 
 module.exports = codeExchange

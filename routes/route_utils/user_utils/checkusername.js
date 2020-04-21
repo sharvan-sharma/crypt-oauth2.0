@@ -8,7 +8,7 @@ function checkUserName(req, res, next) {
         })
     } else {
         User.exists({
-            username
+            username:req.body.username
         }, (err, flag) => {
             if (err) {
                 res.json({

@@ -2,22 +2,23 @@ const mongoose =require('mongoose');
 const passportLocalMongoose = require('passport-local-mongoose'); 
 
 const appSchema = mongoose.Schema({
-    appdocID:{type:Object,unique:true,required:true}
+    appdocID:{type:String}
 })
 
 const clientSchema = mongoose.Schema({
-    client_id:{type:Object,unique:true,required:true}
+    client_id:{type:String}
 })
 
 const userSchema = mongoose.Schema({
   username:{type:String,unique:true},//tester1
   password:{type:String},
   email:{type:String,unique:true},
-  cryptId:{type:String,unique:true},//tester1.user-crypt
+  cryptId:{type:String},//tester1.user-crypt
   name:{type:Object},
   attempts:{type:Number},
   last:{type:String},
   verified:{type:Boolean},
+  transaction_id:{type:String},
   status:{type:String},
   apps:[appSchema],
   approved_clients:[clientSchema]

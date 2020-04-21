@@ -16,7 +16,11 @@ function checkScope(scope, scopeArray) {
                         return false
                     }
                 })
-                (flag) ? resolve(true) : reject('scope')
+            if(flag){
+               resolve(true)
+            }else{
+                reject('scope')
+            }
         }
     })
     return promise
@@ -29,11 +33,24 @@ function checkResponseType(option1, option2) {
     return promise
 }
 
+const checkuri = (uri,uriarray)=>{
+    let promise = new Promise(resolve=>{
+        let flag = uriarray.some(ele=>{
+            if(ele.uri === uri ){
+                return true
+            }else{
+                return false
+            }
+        })
+        resolve(flag)
+    })
+    return promise
+}
+
 
 function validate(req, res, next) {
 
     const {
-        state,
         redirect_uri,
         client_id,
         scope,
@@ -57,7 +74,9 @@ function validate(req, res, next) {
                 })
             } else if (document) {
                 const doc = document.toObject()
-                if (doc.RedirectURIs.includes(redirect_uri)) {
+                let promise = checkuri(redirect_uri,doc.RedirectURIs)
+                promise.then(flag=>{
+                if (flag) {
                     let promise1 = checkScope(scope, doc.scope)
                     let promise2 = checkResponseType(response_type, doc.response_type)
                     Promise.all([promise1, promise2])
@@ -84,6 +103,7 @@ function validate(req, res, next) {
                         error_uri: process.env.ERROR_URI
                     })
                 }
+            })
             } else {
                 res.json({
                     error: 'Unrecognised_Client',

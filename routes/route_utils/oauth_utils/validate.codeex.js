@@ -6,6 +6,20 @@
 
 const Client = require('../../../src/config/models/client.model')
 
+const checkuri = (uri,uriarray)=>{
+     let promise = new Promise(resolve=>{
+        let flag = uriarray.some(ele=>{
+            if(ele.uri === uri ){
+                return true
+            }else{
+                return false
+            }
+        })
+        resolve(flag)
+    })
+    return promise
+}
+
 
 function validate(req, res, next) {
     const {
@@ -13,7 +27,7 @@ function validate(req, res, next) {
         client_secret,
         redirect_uri,
         grant_type
-    } = req.body
+    } = req.body.query
     if (client_id === undefined || client_secret === undefined || redirect_uri === undefined) {
         res.json({
             error: 'Invalid_Request',
@@ -32,23 +46,26 @@ function validate(req, res, next) {
                     error_uri: process.env.ERROR_EXCHANGE
                 })
             } else if (document) {
-                if (document.RedirectURIs.includes(redirect_uri)) {
-                    if (grant_type !== 'authorization_code' || grant_type === undefined) {
+                let promise = checkuri(redirect_uri,document.RedirectURIs.toObject())
+                promise.then(flag=>{
+                    if(flag){
+                        if (grant_type !== 'authorization_code' || grant_type === undefined) {
+                            res.json({
+                                error: 'invalid_grant_type',
+                                error_description: 'grant_type is either undefined or invalid',
+                                error_uri: process.env.ERROR_EXCHANGE
+                            })
+                        } else {
+                            next()
+                        }
+                    } else {
                         res.json({
-                            error: 'invalid_grant_type',
-                            error_description: 'grant_type is either undefined or invalid',
+                            error: 'invalid_redirect_uri',
+                            error_decription: 'Redirect_uri mentioned in request is not registered',
                             error_uri: process.env.ERROR_EXCHANGE
                         })
-                    } else {
-                        next()
                     }
-                } else {
-                    res.json({
-                        error: 'invalid_redirect_uri',
-                        error_decription: 'Redirect_uri mentioned in request is not registered',
-                        error_uri: process.env.ERROR_EXCHANGE
-                    })
-                }
+                })
             } else {
                 res.json({
                     error: 'unrecognised_client',

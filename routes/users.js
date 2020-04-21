@@ -6,7 +6,7 @@ const user = require('../routes/route_utils/user_utils/index')
 
 const router = express.Router();
 
-router.all('/', (req, res) => console.log('welcome to crypt api server'))
+router.all('/', (req, res) => res.json({msg:'welcome to crypt api server'}))
 
 router.route('/checkusername')
     .post(user.CheckUserName)
@@ -17,7 +17,7 @@ router.route('/checkemail')
 router.route('/register')
     .post(user.Register)
 
-router.route('/verifyemail')
+router.route('/vu')//verifyuser
     .get(user.VerifyEmail,
         userpassport.authenticate('local', {
             successRedirect: '/loginsuccess',
@@ -25,10 +25,10 @@ router.route('/verifyemail')
         }))
 
 router.route('/login')
-    .post(userpassport.authenticate('local', {
+    .all(user.ValidateVerify,userpassport.authenticate('local', {
         successRedirect: '/loginsuccess',
         failureRedirect: '/loginfail'
-    }));
+    }))
 
 router.route('/loginsuccess')
     .get(user.SetActive)
@@ -42,7 +42,7 @@ router.route('/loginfail')
 router.route('/forgotpwd')
     .post(user.PasswordResetEmail)
 
-router.route('/verifypasswordreset')
+router.route('/vpr')//verifyPasswordResetEmail
     .get(user.VerifyPasswordResetEmail)
 
 router.route('/changepassword')
@@ -51,6 +51,9 @@ router.route('/changepassword')
             successRedirect: '/loginsuccess',
             failureRedirect: '/loginfail'
         }))
+
+router.route('/revokeaccess')
+.post(user.RevokeAccess)
 
 router.route('/logout')
     .get(user.Logout);

@@ -9,6 +9,8 @@ const EditProjectName = require('./editprojectname')
 const DeleteProject = require('./deleteproject')
 const DeleteOrigin =  require('./deleteorigin')
 const DeleteRedirect = require('./deleteredirect')
+const DeleteAllOrigins = require('./deleteallorigins')
+const DeleteAllRedirects = require('./deleteallredirects')
 
 module.exports = {
     VerifyLoggedIn,
@@ -21,5 +23,7 @@ module.exports = {
     EditProjectName,
     DeleteOrigin,
     DeleteProject,
-    DeleteRedirect
+    DeleteRedirect,
+    DeleteAllOrigins,
+    DeleteAllRedirects
 }

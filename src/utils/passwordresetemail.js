@@ -1,4 +1,5 @@
 const nodemailer = require("nodemailer");
+const jwt = require('jsonwebtoken')
 
 const magic = (str)=>{
     const magic = str.substring(0,1).toUpperCase()+str.substring(1).toLowerCase()
@@ -25,16 +26,16 @@ const recoverPwdMail = async (user,token,cb)=>{
   });
 
   let info = await transporter.sendMail({
-    from: '"NotesKeeper Support Team" <noteskeeper247@gmail.com>',
+    from: '"CryPt Support Team" <crypt.oauth.service@gmail.com>',
     to: user.email, 
-    subject: "Password Recovery Mail from NoteKeeper", 
+    subject: "Password Recovery Mail from CryPt Oauth2.0", 
     html: `<b>Hello ${beautifyname(user.name)}</b>
-           <p>Click on the link given below to cange your account password</p>
-           <p><a href=${process.env.FRONT_DOMAIN+'fpwd?pt='+token}>${process.env.FRONT_DOMAIN+'fpwd?pt='+token}</a></p>
+           <p>Click on the link given below to change your account password</p>
+           <p><a href=${process.env.FRONT_DOMAIN+'vpr?pt='+token}>${process.env.FRONT_DOMAIN+'vpr?pt='+token}</a></p>
            <small>This link is going to be invalid after 10 minutes of generation</small>
            <br/>
            <p>Thank you</p>
-           <p>Noteskeeper support Team</p>` 
+           <p>CryPt support Team</p>` 
   });
   console.log("Message sent: %s", info.messageId);
   console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
