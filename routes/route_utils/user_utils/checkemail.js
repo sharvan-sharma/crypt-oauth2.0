@@ -4,6 +4,7 @@ function checkEmail(req, res, next) {
 
     if (req.body.email === undefined) {
         res.json({
+            status:301,
             error: 'missing_parameters'
         })
     } else {

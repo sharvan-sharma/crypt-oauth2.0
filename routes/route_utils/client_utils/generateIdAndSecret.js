@@ -25,17 +25,17 @@ function generateCredentials(req, res, next) {
     }, (err, doc) => {
         if (err) {
             res.json({
-                error: 'server_error'
+                error: 'server_error',status:500
             })
         } else if(doc) {
             const document = doc.toObject()
             if (document.OriginURIs === undefined || document.RedirectURIs === undefined) {
                 res.json({
-                    error: 'uris are not specified'
+                    error: 'uris are not specified',status:422
                 })
             } else if (document.OriginURIs.length === 0 || document.RedirectURIs.length === 0) {
                 res.json({
-                    error: 'uris are not specified'
+                    error: 'uris are not specified',status:422
                 })
             } else {
                 generator(document._id,document.type, (client_id, client_secret) => {
@@ -50,14 +50,17 @@ function generateCredentials(req, res, next) {
                     },{strict:false}, (err,clientdoc) => {
                         if (err) {
                             res.json({
-                                error: 'server_error'
+                                error: 'server_error',status:500
                             })
                         } else if(clientdoc){
                             res.json({
-                                status: 200
+                                status: 200,
+                                client_id,
+                                client_secret,
+                                created_at:document.created_at
                             })
                         }else{
-                            res.json({error:'client doesnot exists'})
+                            res.json({error:'client doesnot exists',status:401})
                         }
                     })
                 })

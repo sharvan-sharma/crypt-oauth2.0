@@ -7,13 +7,21 @@ const router = express.Router()
 router.route('/authorization')
 .post(oauth.ValidateAuthCode,oauth.EnsureLogin)
 
+router.route('/getclient')
+.post(oauth.GetClient)
+
 //decision from  user 
 router.route('/decision')
 .post(oauth.SendAuthCode)
 
 //exchange cryptId from authCode
-router.route('/codeexchange')
+router.route('/tokenexchange')
 .post(oauth.ValidateCodeEx,oauth.CodeExchange)
+
+//route to refressh access token
+router.route('/refreshtoken')
+.post(oauth.RefreshAccessToken)
+
 
 
 

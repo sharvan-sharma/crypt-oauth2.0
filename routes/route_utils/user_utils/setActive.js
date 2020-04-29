@@ -14,7 +14,7 @@ const setActive = (req, res, next) => {
         }, (err,doc) => {
             if (err) {
                 res.json({
-                    error: 'server_error'
+                    error: 'server_error',status:500
                 })
             } else if(doc) {
                 winslog.log({
@@ -23,11 +23,14 @@ const setActive = (req, res, next) => {
                 });
                 res.json({
                     status: 200,
-                    user: req.user.username,
-                    transaction_id:doc.toObject().transaction_id
+                    username: doc.username,
+                    email:doc.email,
+                    name:doc.name,
+                    logged_in:true,
+                    transaction_id:doc.transaction_id
                 })
             }else{
-                res.json({error:'no user exists'})
+                res.json({error:'no user exists',status:401})
             }
         })
     } else {

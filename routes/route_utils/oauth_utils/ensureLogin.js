@@ -13,15 +13,18 @@ function ensurelogin(req, res, next) {
         created_at:new Date()
     }, (err, doc) => {
     if(err){
-        res.json({error:'server_error'})
+        res.json({error:'server_error',status:500})
     }else{
         if (req.isAuthenticated()) {
+            console.log('logged_in')
             res.json({
                 logged_in:true,
-                transaction_id: doc._id
+                transaction_id: doc._id,
+                status:200,
             })
         } else {
             res.json({
+                status:200,
                 logged_in:false,
                 transaction_id: doc._id
             })

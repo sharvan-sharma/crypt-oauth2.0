@@ -8,6 +8,9 @@ const router = express.Router();
 
 router.all('/', (req, res) => res.json({msg:'welcome to crypt api server'}))
 
+router.route('/checklogin')
+    .get(user.CheckLogin)
+
 router.route('/checkusername')
     .post(user.CheckUserName)
 
@@ -18,7 +21,7 @@ router.route('/register')
     .post(user.Register)
 
 router.route('/vu')//verifyuser
-    .get(user.VerifyEmail,
+    .post(user.VerifyEmail,
         userpassport.authenticate('local', {
             successRedirect: '/loginsuccess',
             failureRedirect: '/loginfail'
@@ -43,7 +46,7 @@ router.route('/forgotpwd')
     .post(user.PasswordResetEmail)
 
 router.route('/vpr')//verifyPasswordResetEmail
-    .get(user.VerifyPasswordResetEmail)
+    .post(user.VerifyPasswordResetEmail)
 
 router.route('/changepassword')
     .post(user.ResetPassword,
@@ -57,6 +60,10 @@ router.route('/revokeaccess')
 
 router.route('/logout')
     .get(user.Logout);
+
+router.route('/readapprovedclients')
+    .get(user.ReadApprovedClients)
+
 
 
 module.exports = router;

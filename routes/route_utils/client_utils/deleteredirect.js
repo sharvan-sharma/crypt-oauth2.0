@@ -8,10 +8,10 @@ function deleteredirect(req,res,next){
         Client.findOneAndUpdate({dev_id:req.user._id,_id:project_id},
                                  {'$pull':{
                                      'RedirectURIs':{_id:uri_id}
-                                 }},(err,doc)=>{
-                                     if(err){res.json({error:'server_error'})}
-                                     else if(doc){res.json({status:200})}
-                                     else{res.json({error:'uri donot exists'})}
+                                 }},{new:true},(err,doc)=>{
+                                     if(err){res.json({error:'server_error',status:500})}
+                                     else if(doc){res.json({status:200,RedirectURIs:doc.RedirectURIs})}
+                                     else{res.json({error:'uri donot exists',status:422})}
                                  })
     }
 }

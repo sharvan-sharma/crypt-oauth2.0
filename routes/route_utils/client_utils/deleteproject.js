@@ -11,7 +11,7 @@ function deleteProject(req, res, next) {
     }, (err,doc) => {
         if (err) {
             res.json({
-                error: 'server_error'
+                error: 'server_error',status:500
             })
         } else if(doc) {
             User.findOneAndUpdate({_id:doc.dev_id},{
@@ -28,7 +28,7 @@ function deleteProject(req, res, next) {
                 }
             })
         }else{
-            res.json({error:'client doesnot exists'})
+            res.json({error:'client doesnot exists',status:401})
         }
     })
 }

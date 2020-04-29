@@ -4,7 +4,7 @@ const RevokeAccess = (req,res,next)=>{
     if(req.isAuthenticated()){
         User.findOneAndUpdate({_id:req.user._id},
             {'$pull':{
-                'approved_clients':{$elematch:{'client_id':client_id}}
+                'approved_clients':{'client_id':req.body.client_id}
             }
         },(err)=>{
             if(err){

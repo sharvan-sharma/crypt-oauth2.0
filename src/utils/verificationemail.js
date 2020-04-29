@@ -30,7 +30,7 @@ const sendEmail = async (user,token,cb)=>{
     subject: "Verification Mail from CryPt Oauth2.0", 
     html: `<b>Hello ${beautifyname(user.name)}</b>
            <p>Click on the verification link given below to verify your account</p>
-           <p><a href=${process.env.FRONT_DOMAIN+'vu?vt='+token}>${process.env.FRONT_DOMAIN+'vu?vt='+token}</a></p>
+           <p><a href=${process.env.FRONT_DOMAIN+'verifyemail?vt='+token}>${process.env.FRONT_DOMAIN+'verifyemail?vt='+token}</a></p>
            <small>This link is going to be invalid after 1 hour of generation</small>
            <br/>
            <p>Thank you</p>

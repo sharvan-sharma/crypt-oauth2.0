@@ -30,7 +30,7 @@ function editRedirect(req, res, next) {
     }, (err, doc) => {
         if (err) {
             res.json({
-                error: 'server_error'
+                error: 'server_error',status:500
             })
         } else if(doc) {
             let promise = checkuri(new_uri,doc.toObject().RedirectURIs)
@@ -52,11 +52,11 @@ function editRedirect(req, res, next) {
                 }, (err, document) => {
                     if (err) {
                         res.json({
-                            error: 'server_error'
+                            error: 'server_error',status:500
                         })
                     } else if(document) {
                         res.json({
-                            status: 200
+                            status: 200,RedirectURIs:document.RedirectURIs
                         })
                     }else{
                         res.json({error:'parameter values donot exists'})
@@ -65,11 +65,12 @@ function editRedirect(req, res, next) {
             } else {
                 res.json({
                     error: 'uri already exists'
+                    ,status:422
                 })
             }
            })
         }else{
-            res.json({error:'client_doesnot_exists'})
+            res.json({error:'client_doesnot_exists',status:401})
         }
     })
 }

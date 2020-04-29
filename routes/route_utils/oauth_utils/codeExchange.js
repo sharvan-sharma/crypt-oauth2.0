@@ -4,6 +4,24 @@ const jwt = require('jsonwebtoken')
 const Authorization = require('../../../src/config/models/authcodes.model')
 const User = require('../../../src/config/models/user.model')
 
+function generateToken(obj,secret,expirestime){
+    if(expirestime === null){//refreshtoken
+        let promise = new Promise((resolve,reject)=>{
+            jwt.sign(obj,secret,(err,token)=>{
+                (err)?reject(err):resolve(token)
+            })
+        })
+        return promise
+    }else{//accesstoken
+         let promise = new Promise((resolve,reject)=>{
+            jwt.sign(obj,secret,{expiresIn:expirestime},(err,token)=>{
+                (err)?reject(err):resolve(token)
+            })
+        })
+        return promise
+    }
+}
+
 function codeExchange(req,res,next){
     if(req.body.query.code === undefined){
         res.json({error:'parameter_missing'})
@@ -41,7 +59,29 @@ function codeExchange(req,res,next){
                                     ,error_uri:process.env.ERROR_EXCHANGE
                                 })
                             }else{
-                                res.json({cryptId:doc.cryptId})
+                                const obj = {cryptId:doc.cryptId,client_id:document.client_id}
+                                let accessToken = generateToken(obj,process.env.ACCESS_TOKEN_SECRET,3600)
+                                let refreshToken = generateToken(obj,process.env.REFRESH_TOKEN_SECRET,null)
+                                Promise.all([accessToken,refreshToken])
+                                .then(result=>{
+                                    const [access_token,refresh_token] = result
+                                    res.set({'Content-Type': 'application/json',
+                                             'Cache-Control': 'no-store',
+                                              'Pragma': 'no-cache'})
+                                    res.json({
+                                            access_token:"bearer "+access_token,
+                                            token_type:"bearer",
+                                            expires_in:'1h',
+                                            refresh_token
+                                    })
+                                })
+                                .catch(err=>{
+                                     res.json({
+                                        error:'server_error'
+                                        ,error_description:'error occured while processing the request'
+                                        ,error_uri:process.env.ERROR_EXCHANGE
+                                    })
+                                })
                             }
                         })
                     }else{

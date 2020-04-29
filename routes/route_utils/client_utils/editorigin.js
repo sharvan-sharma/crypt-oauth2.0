@@ -30,7 +30,7 @@ function editOrigin(req, res, next) {
     }, (err, doc) => {
         if (err) {
             res.json({
-                error: 'server_error'
+                error: 'server_error',status:500
             })
         } else if(doc) {
             let promise = checkuri(new_uri,doc.toObject().OriginURIs)
@@ -49,25 +49,26 @@ function editOrigin(req, res, next) {
                     }],
                     strict: false,
                     new: true
-                }, (err, documnet) => {
+                }, (err, document) => {
                     if (err) {
                         res.json({
-                            error: 'server_error'
+                            error: 'server_error',status:500
                         })
                     } else {
                         res.json({
-                            status: 200
+                            status: 200,
+                            OriginURIs:document.OriginURIs
                         })
                     }
                 })
             } else {
                 res.json({
-                    error: 'uri already exists'
+                    error: 'uri already exists',status:422
                 })
             }
            })
         }else{
-            res.json({error:'client_doesnot_exists'})
+            res.json({error:'client_doesnot_exists',status:401})
         }
     })
 }

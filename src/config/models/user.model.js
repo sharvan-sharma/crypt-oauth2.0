@@ -6,7 +6,8 @@ const appSchema = mongoose.Schema({
 })
 
 const clientSchema = mongoose.Schema({
-    client_id:{type:String}
+    client_id:{type:String},
+    projectname:{type:String}
 })
 
 const userSchema = mongoose.Schema({
@@ -29,11 +30,12 @@ const options = {
     usernameField:'username',
     attemptsField:'attempts',
     lastLoginField:'last',
-    usernameLowerCase:true,
+    usernameLowerCase:false,
     limitAttempts:true,
     maxAttempts:10,
     usernameQueryFields:['email']
 }
+
 
 userSchema.plugin(passportLocalMongoose,options);
 

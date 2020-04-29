@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken')
 
 function verifyPwdResetEmail(req,res,next){
-    jwt.verify(req.query.pt,process.env.RESET_PWD_SECRET,(err,payload)=>{
+    jwt.verify(req.body.token,process.env.RESET_PWD_SECRET,(err,payload)=>{
         if(err){
             if(err.name === 'TokenExpiredError'){
                 res.json({status:422,error:'token_expired'})

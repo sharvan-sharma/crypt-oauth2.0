@@ -10,9 +10,10 @@ const User = require('../../../src/config/models/user.model')
 function createProject(req, res, next) {
     const {
         type,
-        projectname
+        projectname,
+        redirect_uri,
+        origin_uri
     } = req.body
-
     if (type === undefined || projectname === undefined || projectname.length <= 3) {
         res.json({
             error: 'validation'
@@ -30,11 +31,11 @@ function createProject(req, res, next) {
         }, (err, doc) => {
             if (err) {
                 res.json({
-                    error: 'server_error'
+                    error: 'server_error',status:500
                 })
             } else if (doc) {
                 res.json({
-                    error: 'app with the name allready exists'
+                    error: 'app with the name allready exists',status:422
                 })
             } else {
                 Client.create({
@@ -42,11 +43,14 @@ function createProject(req, res, next) {
                     projectname,
                     response_type,
                     scope,
-                    type
+                    RedirectURIs:[{uri:redirect_uri}],
+                    OriginURIs:[{uri:origin_uri}],
+                    type,
+                    created_at:new Date()
                 }, (err, clientdoc) => {
                     if (err) {
                         res.json({
-                            error: 'server_error'
+                            error: 'server_error',status:500
                         })
                     } else {
                         User.findOneAndUpdate({
@@ -60,11 +64,12 @@ function createProject(req, res, next) {
                         }, (err) => {
                             if (err) {
                                 res.json({
-                                    error: 'server_error'
+                                    error: 'server_error',status:500
                                 })
                             } else {
                                 res.json({
-                                    status: 200
+                                    status: 200,
+                                    id:clientdoc._id
                                 })
                             }
                         })

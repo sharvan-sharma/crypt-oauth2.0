@@ -7,14 +7,15 @@ const uriSchema = mongoose.Schema({
 
 const clientSchema = mongoose.Schema({
     dev_id:{type:String},
-    projectname:{type:String,unique:true,required:true},
+    projectname:{type:String,required:true,unique:true},
     client_id:{type:String},
     client_secret:{type:String},
     RedirectURIs:[uriSchema],
     OriginURIs:[uriSchema],
     scope:[{type:String}],
     response_type:{type:String},
-    type:{type:String}
+    type:{type:String},
+    created_at:{type:Date}
 })
 
 const Client = mongoose.model('clients',clientSchema)

@@ -11,6 +11,10 @@ const DeleteOrigin =  require('./deleteorigin')
 const DeleteRedirect = require('./deleteredirect')
 const DeleteAllOrigins = require('./deleteallorigins')
 const DeleteAllRedirects = require('./deleteallredirects')
+const ReadAllClients = require('./readAllClient')
+const ReadClient = require('./readclient')
+const ResetSecret = require('./resetSecret')
+const Search = require('./search')
 
 module.exports = {
     VerifyLoggedIn,
@@ -25,5 +29,9 @@ module.exports = {
     DeleteProject,
     DeleteRedirect,
     DeleteAllOrigins,
-    DeleteAllRedirects
+    DeleteAllRedirects,
+    ReadAllClients,
+    ReadClient,
+    ResetSecret,
+    Search
 }

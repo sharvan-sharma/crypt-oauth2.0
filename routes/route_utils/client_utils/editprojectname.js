@@ -7,7 +7,7 @@ function editProjectName(req, res, next) {
     } = req.body
     if (project_id === undefined) {
         res.json({
-            error: 'malformed request'
+            error: 'malformed request',status:500
         })
     } else {
         Client.findOneAndUpdate({
@@ -17,16 +17,17 @@ function editProjectName(req, res, next) {
             '$set': {
                 projectname: new_projectname,
             }
-        }, {
+        }, {new:true,
             strict: false
-        }, (err) => {
+        }, (err,doc) => {
             if (err) {
                 res.json({
-                    error: 'server_error'
+                    error: 'server_error',status:500
                 })
             } else {
                 res.json({
-                    status: 200
+                    status: 200,
+                    name:doc.projectname
                 })
             }
         })

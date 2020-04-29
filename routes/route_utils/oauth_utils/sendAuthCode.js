@@ -3,22 +3,23 @@
 const User = require('../../../src/config/models/user.model')
 const Transaction = require('../../../src/config/models/transaction.model')
 const Authorization = require('../../../src/config/models/authcodes.model')
+const Client = require('../../../src/config/models/client.model')
 const jwt = require('jsonwebtoken')
 
 function sendAuthCode(req, res, next) {
-    
     const {
         transaction_id,
         decision
     } = req.body.query
     if(transaction_id === undefined && decision === undefined){
-        res.json({error:'parameters_missing'})
+        res.json({error:'parameters_missing',status:422})
     }else if (decision === "allow") {
         Transaction.findOneAndDelete({
            _id:transaction_id
         }, (err, document) => {
             if (err) {
                 res.json({
+                    status:200,
                     error: 'server_error',
                     error_description: 'error encountered at server',
                     error_uri: process.env.ERROR_URI
@@ -31,7 +32,7 @@ function sendAuthCode(req, res, next) {
                 } = document.toObject()
                 
                 const newDateobj = new Date(new Date().getTime() + 600000)
-                
+
                 let promise1 =  User.findOne({
                     _id: req.user._id
                 },{approved_clients:1}).exec()
@@ -54,12 +55,14 @@ function sendAuthCode(req, res, next) {
                         }, (err, token) => {
                             if (err) {
                                 res.json({
+                                    status:500,
                                     error: 'server_error',
                                     error_description: 'error encountered at server',
                                     error_uri: process.env.ERROR_URI
                                 })
                             } else {
                                 res.json({
+                                    status:200,
                                     code: token,
                                     state,
                                     redirect_uri
@@ -75,45 +78,57 @@ function sendAuthCode(req, res, next) {
                                 })
                     
                     if(check){
-                        User.findOneAndUpdate({_id:req.user._id},{
-                            '$push':{
-                                'approved_clients':{
-                                    client_id
-                                }
-                            }
-                        },(err,doc)=>{
+                        Client.findOne({client_id},{projectname:1},(err,client_doc)=>{
                             if(err){
-                                console.log('error')
+                                console.log(err)
+                            }else if(client_doc){
+                                User.findOneAndUpdate({_id:req.user._id},{
+                                        '$push':{
+                                            'approved_clients':{
+                                                client_id,
+                                                projectname:client_doc.projectname
+                                            }
+                                        }
+                                    },{strict:false},(err,doc)=>{
+                                        if(err){
+                                            console.log('error')
+                                        }
+                                    })
+                            }else{
+                                console.log('client not found')
                             }
                         })
                     }
                 }).catch(err=>{
-                    res.json({error:'server_error',
+                    res.json({status:500,error:'server_error',
                             error_description: 'error encountered at server',
                             error_uri: process.env.ERROR_URI})
                 }) 
             }else{
-                res.json({error:'paramater values doesnot exists'})
+                res.json({status:422,error:'paramater values doesnot exists'})
             }
         })
     } else {
         Transaction.findOneAndDelete({
             _id:transaction_id
-        }, (err) => {
-            if (err , doc) {
+        }, (err,doc) => {
+            if (err) {
                 res.json({
+                    status:500,
                     error: 'server_error',
                     error_description: 'error encountered at server',
                     error_uri: process.env.ERROR_URI
                 })
             } else if(doc) {
                 res.json({
+                    status:401,
                     error: 'access_denied',
                     error_description: 'user denied the request',
                     error_uri: process.env.ERROR_URI
                 })
             } else{
                 res.json({
+                    status:422,
                     error:'transaction doesnot exists'
                 })
             }

@@ -49,7 +49,6 @@ const checkuri = (uri,uriarray)=>{
 
 
 function validate(req, res, next) {
-
     const {
         redirect_uri,
         client_id,
@@ -58,6 +57,7 @@ function validate(req, res, next) {
     } = req.body.query
     if (client_id === undefined || redirect_uri === undefined) {
         res.json({
+            status:401,
             error: 'Invalid_request',
             error_description: 'request is malformed',
             error_uri: process.env.ERROR_URI
@@ -68,6 +68,7 @@ function validate(req, res, next) {
         }, (err, document) => {
             if (err) {
                 res.json({
+                    status:500,
                     error: 'Server_Error',
                     error_description: 'Error occured while processing this Request',
                     error_uri: process.env.ERROR_URI
@@ -84,12 +85,14 @@ function validate(req, res, next) {
                         .catch(errflag => {
                             if (errflag === 'scope') {
                                 res.json({
+                                    status:422,
                                     error: 'Invalid_Scope',
                                     error_description: 'Scope defined in Request is either Invalid or Unassigned',
                                     error_uri: process.env.ERROR_URI
                                 })
                             } else {
                                 res.json({
+                                    status:422,
                                     error: 'Invalid_Response_Type',
                                     error_description: 'Response type mentioned in the request is invalid',
                                     error_uri: process.env.ERROR_URI
@@ -98,6 +101,7 @@ function validate(req, res, next) {
                         })
                 } else {
                     res.json({
+                        status:401,
                         error: 'Invalid_Redirect_URI',
                         error_description: 'redirect_uri mentioned in request doesnot match any registered uris',
                         error_uri: process.env.ERROR_URI
@@ -106,6 +110,7 @@ function validate(req, res, next) {
             })
             } else {
                 res.json({
+                    status:401,
                     error: 'Unrecognised_Client',
                     error_description: 'No Client is Registered With this Client Id',
                     error_uri: process.env.ERROR_URI

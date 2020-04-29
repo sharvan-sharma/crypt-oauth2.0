@@ -23,20 +23,20 @@ const checkuri = (uri,uriarray)=>{
 function addOrigin(req,res,next){
      const {uri,project_id}  = req.body
      Client.findOne({dev_id:req.user._id,_id:project_id},{OriginURIs:1},(err,clientdoc)=>{
-          if(err){res.json({error:'server_error'})}
+          if(err){res.json({error:'server_error',status:500})}
           else if(clientdoc){
                let promise = checkuri(uri,clientdoc.toObject().OriginURIs)
                promise.then(flag=>{
                     if(flag){
-                         Client.findOneAndUpdate({dev_id:req.user._id,_id:project_id},{'$push':{OriginURIs:{uri}}},{strict:false},(err,document)=>{
-                                   if(err){res.json({error:'server_error'})}
-                                   else{res.json({status:200})}
+                         Client.findOneAndUpdate({dev_id:req.user._id,_id:project_id},{'$push':{OriginURIs:{uri}}},{strict:false,new:true},(err,document)=>{
+                                   if(err){res.json({error:'server_error',status:500})}
+                                   else{res.json({status:200,OriginURIs:document.OriginURIs})}
                          })
                     }else{
-                              res.json({error:'uri already exists'})
+                              res.json({error:'uri already exists',status:422})
                     }
                })
-          }else{res.json({error:'unrecognised app'})}
+          }else{res.json({error:'unrecognised app',status:401})}
      })
 }
 

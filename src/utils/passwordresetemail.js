@@ -31,7 +31,7 @@ const recoverPwdMail = async (user,token,cb)=>{
     subject: "Password Recovery Mail from CryPt Oauth2.0", 
     html: `<b>Hello ${beautifyname(user.name)}</b>
            <p>Click on the link given below to change your account password</p>
-           <p><a href=${process.env.FRONT_DOMAIN+'vpr?pt='+token}>${process.env.FRONT_DOMAIN+'vpr?pt='+token}</a></p>
+           <p><a href=${process.env.FRONT_DOMAIN+'resetpassword?pt='+token}>${process.env.FRONT_DOMAIN+'resetpassword?pt='+token}</a></p>
            <small>This link is going to be invalid after 10 minutes of generation</small>
            <br/>
            <p>Thank you</p>
