@@ -6,9 +6,9 @@ const user = require('../routes/route_utils/user_utils/index')
 
 const router = express.Router();
 
-router.all('/favicon.ico',(req,res)=>{res.json({})})
+router.get('/favicon.ico',(req,res)=>res.status(204))
 
-router.all('/', (req, res) => res.json({msg:'welcome to crypt api server'}))
+router.get('/', (req, res) => res.json({msg:'welcome to crypt api server'}))
 
 router.route('/checklogin')
     .get(user.CheckLogin)
