@@ -16,7 +16,6 @@ function ensurelogin(req, res, next) {
         res.json({error:'server_error',status:500})
     }else{
         if (req.isAuthenticated()) {
-            console.log('logged_in')
             res.json({
                 logged_in:true,
                 transaction_id: doc._id,

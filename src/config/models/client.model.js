@@ -8,6 +8,8 @@ const uriSchema = mongoose.Schema({
 const clientSchema = mongoose.Schema({
     dev_id:{type:String},
     projectname:{type:String,required:true,unique:true},
+    homepagelink:{type:String},
+    description:{type:String},
     client_id:{type:String},
     client_secret:{type:String},
     RedirectURIs:[uriSchema],

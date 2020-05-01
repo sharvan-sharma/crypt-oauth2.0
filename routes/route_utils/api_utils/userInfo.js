@@ -15,7 +15,7 @@ function checkClient(client_id, clientsArray) {
 function userInfo(req, res, next) {
     const {
         access_token
-    } = req.body.query
+    } = req.query
 
     jwt.verify(access_token.split(' ')[1], process.env.ACCESS_TOKEN_SECRET, (err, payload) => {
         if (err) {
@@ -47,10 +47,9 @@ function userInfo(req, res, next) {
                     promise.then(flag => {
                         if (flag) {
                             res.json({
-                                profile: {
                                     name: doc.name,
-                                    email: doc.email
-                                }
+                                    email: doc.email,
+                                    cryptId:payload.cryptId
                             })
                         } else {
                             res.json({

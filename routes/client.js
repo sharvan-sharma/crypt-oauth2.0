@@ -3,8 +3,17 @@ const client = require('./route_utils/client_utils/index')
 
 const router = express.Router()
 
+router.route('/edithomepage')
+.post(client.EditHomepage)
+
+router.route('/editdescription')
+.post(client.EditDescription)
+
 router.route('/search')
 .post(client.Search)
+
+router.route('/deletemultipleprojects')
+.post(client.DeleteMultipleProjects)
 
 router.route('/readallclients')
 .get(client.VerifyLoggedIn,client.ReadAllClients)

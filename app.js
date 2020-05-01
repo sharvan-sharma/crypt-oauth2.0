@@ -1,7 +1,6 @@
 const createError = require('http-errors');
 const express = require('express');
 const path = require('path');
-const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const logger = require('morgan');
 const session = require('express-session');
@@ -40,7 +39,10 @@ app.use(session({
   saveUninitialized: false,
   store: new MongoStore({
     mongooseConnection: dbConnection
-  })
+  }),
+  cookie:{
+    maxAge:1000*60*60*24
+  }
 }));
 app.use(userpassport.initialize());
 app.use(userpassport.session());
@@ -49,13 +51,13 @@ app.use(bodyParser.urlencoded({
   extended: false
 }));
 app.use(bodyParser.json());
-app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', router.users);
 app.use('/oauth', router.oauth);
 app.use('/api', router.api);
 app.use('/client', router.client)
+app.use('/store',router.store)
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

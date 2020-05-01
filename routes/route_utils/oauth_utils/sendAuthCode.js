@@ -78,15 +78,10 @@ function sendAuthCode(req, res, next) {
                                 })
                     
                     if(check){
-                        Client.findOne({client_id},{projectname:1},(err,client_doc)=>{
-                            if(err){
-                                console.log(err)
-                            }else if(client_doc){
                                 User.findOneAndUpdate({_id:req.user._id},{
                                         '$push':{
                                             'approved_clients':{
                                                 client_id,
-                                                projectname:client_doc.projectname
                                             }
                                         }
                                     },{strict:false},(err,doc)=>{
@@ -94,10 +89,7 @@ function sendAuthCode(req, res, next) {
                                             console.log('error')
                                         }
                                     })
-                            }else{
-                                console.log('client not found')
-                            }
-                        })
+                        
                     }
                 }).catch(err=>{
                     res.json({status:500,error:'server_error',

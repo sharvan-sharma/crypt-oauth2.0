@@ -15,6 +15,9 @@ const ReadAllClients = require('./readAllClient')
 const ReadClient = require('./readclient')
 const ResetSecret = require('./resetSecret')
 const Search = require('./search')
+const DeleteMultipleProjects = require('./deletemultipleprojects')
+const EditHomepage = require('./edithomepage')
+const EditDescription = require('./editdescription')
 
 module.exports = {
     VerifyLoggedIn,
@@ -33,5 +36,8 @@ module.exports = {
     ReadAllClients,
     ReadClient,
     ResetSecret,
-    Search
+    Search,
+    DeleteMultipleProjects,
+    EditDescription,
+    EditHomepage
 }

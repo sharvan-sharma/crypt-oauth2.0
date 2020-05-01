@@ -23,10 +23,10 @@ function generateToken(obj,secret,expirestime){
 }
 
 function codeExchange(req,res,next){
-    if(req.body.query.code === undefined){
+    if(req.body.code === undefined){
         res.json({error:'parameter_missing'})
     }else{
-    jwt.verify(req.body.query.code,process.env.AUTH_SECRET,(err,payload)=>{
+    jwt.verify(req.body.code,process.env.AUTH_SECRET,(err,payload)=>{
         if(err){
             if(err.name === 'TokenExpiredError'){
                 res.json({

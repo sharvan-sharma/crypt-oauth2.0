@@ -12,7 +12,9 @@ function createProject(req, res, next) {
         type,
         projectname,
         redirect_uri,
-        origin_uri
+        origin_uri,
+        homepagelink,
+        description
     } = req.body
     if (type === undefined || projectname === undefined || projectname.length <= 3) {
         res.json({
@@ -40,6 +42,8 @@ function createProject(req, res, next) {
             } else {
                 Client.create({
                     dev_id: req.user._id,
+                    homepagelink,
+                    description,
                     projectname,
                     response_type,
                     scope,

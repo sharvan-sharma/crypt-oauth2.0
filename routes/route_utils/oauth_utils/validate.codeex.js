@@ -27,7 +27,8 @@ function validate(req, res, next) {
         client_secret,
         redirect_uri,
         grant_type
-    } = req.body.query
+    } = req.body
+
     if (client_id === undefined || client_secret === undefined || redirect_uri === undefined) {
         res.json({
             error: 'Invalid_Request',
