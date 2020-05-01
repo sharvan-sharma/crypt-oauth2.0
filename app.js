@@ -17,10 +17,6 @@ process.on('uncaughtException', (err, origin) => {
     err,
     origin
   });
-  winslog.log({
-    level: 'error',
-    message: 'err is ' + err.message + 'origin is' + origin
-  })
 });
 
 

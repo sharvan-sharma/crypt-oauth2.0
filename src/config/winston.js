@@ -36,9 +36,9 @@ var winslog = createLogger({
         prettyPrint()
   ),
   transports: [
-    new transports.File({...options.file,filename:'../../src/logs/combined.log'}),
-    new transports.File({...options.file,filename:'../../src/logs/error.log',level:'error'}),
-     new transports.File({...options.file,filename:'../../src/logs/info.log',level:'info'}),
+    new transports.File({...options.file,filename:'../logs/combined.log'}),
+    new transports.File({...options.file,filename:'../logs/error.log',level:'error'}),
+     new transports.File({...options.file,filename:'../logs/info.log',level:'info'}),
     new transports.Console(options.console)
   ],
   exitOnError: false, // do not exit on handled exceptions
