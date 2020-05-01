@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "concurrently \"nodemon ./bin/www\" \"cd .. && cd client && npm start\""
+    "start": "node ./bin/www"
   },
   "dependencies": {
     "app-root-path": "^3.0.0",
