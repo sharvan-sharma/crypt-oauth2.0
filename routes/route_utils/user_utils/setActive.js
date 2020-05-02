@@ -12,7 +12,6 @@ const setActive = (req, res, next) => {
         }, {
             strict: false
         }, (err,doc) => {
-            console.log(doc)
             if (err) {
                 res.json({
                     error: 'server_error',status:500
