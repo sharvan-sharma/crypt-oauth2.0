@@ -8,7 +8,7 @@ const magic = (str)=>{
 
 const beautifyname = (name)=>{
      const {firstname,lastname} = name
-     const middlename = (name.middlename !== '')?magic(middlename)+' ':''
+     const middlename = (name.middlename !== '')?magic(name.middlename)+' ':''
      const beautifyname = magic(firstname)+' '+middlename+magic(lastname)
      return beautifyname
 }
