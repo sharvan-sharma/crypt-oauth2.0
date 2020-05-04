@@ -4,7 +4,7 @@ const transactionSchema = mongoose.Schema({
     client_id:{type:String},
     state:{type:String},
     redirect_uri:{type:String},
-    created_at:{type:Date}
+    createdAt:{type:Date,expires:'5m',default:Date.now}
 })
 
 const Transaction = mongoose.model('transactions',transactionSchema)

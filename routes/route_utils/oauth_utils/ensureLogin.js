@@ -3,14 +3,15 @@
 //      then render the decison Page
 // else
 //      redirect to login first
+// Transaction time is 5 minutes     
+
 const Transaction = require('../../../src/config/models/transaction.model')
 
 function ensurelogin(req, res, next) {
     Transaction.create({
         client_id: req.body.query.client_id,
         redirect_uri: req.body.query.redirect_uri,
-        state: req.body.query.state || '',
-        created_at:new Date()
+        state: req.body.query.state || ''
     }, (err, doc) => {
     if(err){
         res.json({error:'server_error',status:500})

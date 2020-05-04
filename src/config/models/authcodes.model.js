@@ -4,7 +4,7 @@ const authCodeSchema = mongoose.Schema({
     client_id:{type:String},
     redirect_uri:{type:String},
     user_id:{type:String},
-    expiresAt:{type:Date},
+    createdAt:{type:Date,expires:'5m',default:Date.now},
     used:{type:Boolean}
 })
 

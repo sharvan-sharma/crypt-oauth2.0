@@ -31,8 +31,8 @@ function sendAuthCode(req, res, next) {
                     state
                 } = document.toObject()
                 
-                const newDateobj = new Date(new Date().getTime() + 600000)
-
+                //const newDateobj = new Date(new Date().getTime() + 50000)
+                //expired after five minutes
                 let promise1 =  User.findOne({
                     _id: req.user._id
                 },{approved_clients:1}).exec()
@@ -41,8 +41,7 @@ function sendAuthCode(req, res, next) {
                     client_id,
                     user_id: req.user._id,
                     redirect_uri,
-                    used: false,
-                    expiresAt: newDateobj
+                    used: false
                 })
                 
                 Promise.all([promise1,promise2])
@@ -51,7 +50,7 @@ function sendAuthCode(req, res, next) {
                      jwt.sign({
                             id: doc._id
                         }, process.env.AUTH_SECRET, {
-                            expiresIn: 600
+                            expiresIn: 300 //token expired in 5 minutes
                         }, (err, token) => {
                             if (err) {
                                 res.json({
@@ -97,7 +96,7 @@ function sendAuthCode(req, res, next) {
                             error_uri: process.env.ERROR_URI})
                 }) 
             }else{
-                res.json({status:422,error:'paramater values doesnot exists'})
+                res.json({status:422,error:'transaction expired'})
             }
         })
     } else {

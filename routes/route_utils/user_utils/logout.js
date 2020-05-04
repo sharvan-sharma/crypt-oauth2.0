@@ -3,7 +3,6 @@ const winslog = require('../../../src/config/winston')
 
 
 function logout(req,res,next){
-    console.log(req.user)
     if(req.isAuthenticated()){
         User.findOneAndUpdate({username:req.user.username},{
             '$set':{

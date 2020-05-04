@@ -49,7 +49,7 @@ function codeExchange(req,res,next){
                         ,error_description:'error occured while processing the request'
                         ,error_uri:process.env.ERROR_EXCHANGE
                     })
-                }else{
+                }else if(document){
                     if(document.used === false){
                         User.findOne({_id:document.user_id},{cryptId:1},(err,doc)=>{
                             if(err){
@@ -91,6 +91,12 @@ function codeExchange(req,res,next){
                             ,error_uri:process.env.ERROR_EXCHANGE
                         })
                     }
+                }else {
+                     res.json({
+                        error:'code_expired'
+                        ,error_description:'error occured while processing the request'
+                        ,error_uri:process.env.ERROR_EXCHANGE
+                    })
                 }
             })
         }
