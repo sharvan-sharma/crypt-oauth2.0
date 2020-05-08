@@ -20,6 +20,7 @@ const userSchema = mongoose.Schema({
   last:{type:String},
   verified:{type:Boolean},
   transaction_id:{type:String},
+  createdAt:{type:Date,default:Date.now},
   status:{type:String},
   apps:[appSchema],
   approved_clients:[clientSchema]
