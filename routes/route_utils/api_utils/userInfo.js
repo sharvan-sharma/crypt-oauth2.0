@@ -13,6 +13,9 @@ function checkClient(client_id, clientsArray) {
 }
 
 function userInfo(req, res, next) {
+    if(!req.query.access_token){
+        res.json({status:423})
+    }else{
     const {
         access_token
     } = req.query
@@ -69,7 +72,7 @@ function userInfo(req, res, next) {
             })
         }
     })
-
+    }
 }
 
 module.exports = userInfo

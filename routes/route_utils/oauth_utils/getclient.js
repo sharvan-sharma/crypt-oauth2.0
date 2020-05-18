@@ -3,6 +3,9 @@ const Transaction = require('../../../src/config/models/transaction.model')
 const Client = require('../../../src/config/models/client.model')
 
 function getClient(req,res,next){
+    if(!req.body.transaction_id){
+        res.json({status:423})
+    }else{
     Transaction.findOne({_id:req.body.transaction_id},{client_id:1,redirect_uri:1},(err,doc)=>{
         if(err){res.json({status:500})}
         else if(doc){
@@ -20,6 +23,7 @@ function getClient(req,res,next){
         }
         else{res.json({status:422})}
     })
+}
 }
 
 module.exports = getClient

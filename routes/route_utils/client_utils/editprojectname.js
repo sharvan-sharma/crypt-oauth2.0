@@ -1,6 +1,10 @@
 const Client = require('../../../src/config/models/client.model')
 
 function editProjectName(req, res, next) {
+    if(!req.body.project_id || !req.body.new_projectname){
+        res.json({status:423})
+    }else{
+
     const {
         project_id,
         new_projectname
@@ -32,6 +36,7 @@ function editProjectName(req, res, next) {
             }
         })
     }
+}
 }
 
 module.exports = editProjectName

@@ -17,6 +17,11 @@ const checkuri = (uri,uriarray)=>{
 }
 
 function editRedirect(req, res, next) {
+     if (!req.body.uri_id || !req.body.new_uri || !req.body.project_id) {
+        res.json({
+            status: 423
+        })
+    } else {
     const {
         uri_id,
         new_uri,
@@ -73,6 +78,7 @@ function editRedirect(req, res, next) {
             res.json({error:'client_doesnot_exists',status:401})
         }
     })
+}
 }
 
 module.exports = editRedirect

@@ -19,6 +19,9 @@ const generator = (clientdocid, type, cb) => {
 }
 
 function generateCredentials(req, res, next) {
+    if(!req.body.project_id){
+        res.json({status:423})
+    }else{
     Client.findOne({
         dev_id: req.user._id,
         _id: req.body.project_id
@@ -69,6 +72,7 @@ function generateCredentials(req, res, next) {
             res.json({error:'client doesnot exits for this dev'})
         }
     })
+}
 }
 
 module.exports = generateCredentials

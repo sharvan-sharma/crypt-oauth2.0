@@ -16,9 +16,9 @@ function createProject(req, res, next) {
         homepagelink,
         description
     } = req.body
-    if (type === undefined || projectname === undefined || projectname.length <= 3) {
+    if (!type || !projectname || !redirect_uri || !origin_uri || !homepagelink) {
         res.json({
-            error: 'validation'
+            error: 'validation',status:423
         })
     } else {
         if (type === 'ssa') {

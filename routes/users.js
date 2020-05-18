@@ -1,5 +1,4 @@
 const express = require('express');
-const appRoot = require('app-root-path');
 const userpassport = require(`../src/config/userPassport`);
 const winslog = require('../src/config/winston');
 const user = require('../routes/route_utils/user_utils/index')

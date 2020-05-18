@@ -21,6 +21,9 @@ const checkuri = (uri,uriarray)=>{
 }
 
 function addOrigin(req,res,next){
+     if(!req.body.uri || !req.body.project_id){
+         res.json({status:423})
+     }else{
      const {uri,project_id}  = req.body
      Client.findOne({dev_id:req.user._id,_id:project_id},{OriginURIs:1},(err,clientdoc)=>{
           if(err){res.json({error:'server_error',status:500})}
@@ -38,6 +41,7 @@ function addOrigin(req,res,next){
                })
           }else{res.json({error:'unrecognised app',status:401})}
      })
+}
 }
 
 module.exports = addOrigin

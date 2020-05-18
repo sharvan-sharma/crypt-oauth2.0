@@ -2,6 +2,9 @@ const utils = require('../../../src/utils/index')
 const User = require('../../../src/config/models/user.model')
 
 function passwordResetEmail(req, res, next) {
+    if(!req.body.email){
+        res.json({status:423})
+    }else{
     User.findOne({ email: req.body.email}, {username:1,name:1,verified:1}, (err, doc) => {
         if (err) {
             res.json({
@@ -38,6 +41,7 @@ function passwordResetEmail(req, res, next) {
             })
         }
     })
+}
 }
 
 module.exports = passwordResetEmail
