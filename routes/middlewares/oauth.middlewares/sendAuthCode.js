@@ -1,6 +1,7 @@
 const {oauthlogger, winslogger} = require('../../../src/logger')
 const { Transactions, AuthCodes, UserClientMapping } = require('../../../src/config/models')
 const querystring = require('querystring')
+const jwt = require('jsonwebtoken')
 
 const validateDecision = (req,res,next) => {
     const  { transaction_id, decision } = req.body
@@ -44,7 +45,8 @@ const sendAuthCode = async (req,res,next) => {
                                 error_description: 'error encountered at server',
                                 error_uri: process.env.ERROR_URI
                             })
-                            res.status(302).redirect(transaction.redirect_uri+'?'+urlstring)
+                            res.json({status:200,type:'denied',url:transaction.redirect_uri+'?'+urlstring})
+                           // res.status(302).redirect(transaction.redirect_uri+'?'+urlstring)
                         }else{
                             jwt.sign({id:auth_code._id},process.env.AUTH_SECRET, {expiresIn: 300},(err,token)=>{
                                 if(err){
@@ -53,12 +55,14 @@ const sendAuthCode = async (req,res,next) => {
                                         error_description: 'error encountered at server',
                                         error_uri: process.env.ERROR_URI
                                     })
-                                    res.status(302).redirect(transaction.redirect_uri+'?'+urlstring)
+                                    res.json({status:200,type:'denied',url:transaction.redirect_uri+'?'+urlstring})
+                                    //res.status(302).redirect(transaction.redirect_uri+'?'+urlstring)
                                 }else{
                                     const urlstring = querystring.stringify({
                                         code:token,
                                         state:transaction.state
                                     })
+                                    res.json({status:200,type:'allow',url:transaction.redirect_uri+'?'+urlstring})
                                     res.status(302).redirect(transaction.redirect_uri+'?'+urlstring)
                                 }
                             })
@@ -85,15 +89,16 @@ const sendAuthCode = async (req,res,next) => {
                         error_description: 'user denied the request',
                         error_uri: process.env.ERROR_URI
                     })
-                    res.status(302).redirect(transaction.redirect_uri+'?'+urlstring)         
+                    res.json({status:200,type:'denied',url:transaction.redirect_uri+'?'+urlstring})
+                   // res.status(302).redirect(transaction.redirect_uri+'?'+urlstring)         
                 }
             }else{
-                const urlstring = querystring.stringify({
+                res.json({
+                    status:422,
                     error: 'transaction_expired',
-                    error_description: 'transaction has expired,reinifiate the transaction',
+                    error_description: 'transaction has expired,reinitiate the transaction',
                     error_uri: process.env.ERROR_URI
                 })
-                res.status(302).redirect(transaction.redirect_uri+'?'+urlstring)
             }
         }
     )

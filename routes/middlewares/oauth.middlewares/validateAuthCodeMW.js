@@ -5,7 +5,7 @@ const querystring = require('querystring');
 
 const clientIdMW = (req,res,next) => {
     const {client_id} = req.query
-
+    
     Forms.findOne({client_id}, (err, form) => {
             if (err) {
                 res.json({
@@ -15,6 +15,7 @@ const clientIdMW = (req,res,next) => {
                     error_uri: process.env.ERROR_URI
                 })
             } else if (form){
+
                 req.body.form = form.toObject()
                 next()
             }else{
@@ -28,7 +29,7 @@ const clientIdMW = (req,res,next) => {
     })
 }
 
-const redirectUriMW = ()=>{
+const redirectUriMW = (req,res,next)=>{
     const {redirect_uri} = req.query
 
     if(redirect_uri === undefined || !isUrl(redirect_uri)){
@@ -54,10 +55,24 @@ const redirectUriMW = ()=>{
 
 const scopesMW = async (req,res,next)=>{
     const {scope} = req.query
-    try{
-        const project = await Projects.findOne({_id:req.body.form.project_id})
 
-        const valid = scope.split(',').every(ele => project.scopes.includes(ele))
+    if(scope.length > 2){
+        const urlstring = querystring.stringify({
+                error: 'Invalid_Scope',
+                error_description: 'Scope defined in Request are more than allowed scopes',
+                error_uri: process.env.ERROR_URI,
+                state:(req.body.state !== undefined)?req.body.state:null
+        })
+        return res.json({status:423,error_type:'scope',urlstring})
+        // res.status(302).redirect(req.body.redirect_uri+urlstring)
+    }
+    
+    try{
+        const project = await Projects.findOne({_id:req.body.form.project_id},{scopes:1})
+
+        const projectScopes = project.toObject().scopes
+
+        const valid = scope.every(ele => projectScopes.includes(ele))
 
         if(valid){
             next()
@@ -68,7 +83,8 @@ const scopesMW = async (req,res,next)=>{
                 error_uri: process.env.ERROR_URI,
                 state:(req.body.state !== undefined)?req.body.state:null
             })
-            res.status(302).redirect(req.body.redirect_uri+urlstring)
+            res.json({status:423,error_type:'scope',urlstring})
+            // res.status(302).redirect(req.body.redirect_uri+urlstring)
         }
 
     }catch{
@@ -84,13 +100,14 @@ const scopesMW = async (req,res,next)=>{
 const responseTypeMW = (req,res,next) => {
     const {response_type} = req.query
     if(response_type !== 'code'){
-         const urlstring = querystring.stringify({
+        const urlstring = querystring.stringify({
             error: 'Invalid_Response_Type',
             error_description: 'Response type mentioned in the request is invalid',
             error_uri: process.env.ERROR_URI,
             state:(req.body.state !== undefined)?req.body.state:null
         })
-        res.status(302).redirect(req.body.redirect_uri+urlstring)
+        res.json({status:423,error_type:'code',urlstring})
+        // res.status(302).redirect(req.body.redirect_uri+urlstring)
     }else{
         next()
     }
@@ -107,7 +124,8 @@ const codeChallengeMW = (req,res,next) => {
                 error_uri: process.env.ERROR_URI,
                 state:(req.body.state !== undefined)?req.body.state:null
             })
-            res.status(302).redirect(req.body.redirect_uri+urlstring)
+            // res.status(302).redirect(req.body.redirect_uri+urlstring)
+            res.json({status:423,error_type:'c_c',urlstring})
         }else{
             next()
         }

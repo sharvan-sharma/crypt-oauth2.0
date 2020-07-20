@@ -4,7 +4,7 @@ const oauth = require('./middlewares/oauth.middlewares')
 const {clientIdMW,redirectUriMW,scopesMW,responseTypeMW,codeChallengeMW} = require('./middlewares/oauth.middlewares/validateAuthCodeMW')
 const { validateDecision, sendAuthCode } = require('./middlewares/oauth.middlewares/sendAuthCode')
 const { clientIdMWcEx,redirectUriMWcEx,secretMWcEX,grantTypeMWcEX,codeMWcEX,codeChallengeMWcEx} = require('./middlewares/oauth.middlewares/validateTokenExchange')
-
+const {clientIdDeviceMW,sendDeviceCode} = require('./middlewares/oauth.middlewares/sendDeviceCode')
 
 router.get('/', (req,res) => res.send('oauthRoutes'))
 
@@ -42,13 +42,17 @@ router.route('/token/refresh')
 
 router.route('/authorization/device')
         .get(
-            clientIdMW,//because of body
+            clientIdDeviceMW,//because of body
             scopesMW,
-            oauth.sendDeviceCode
+            sendDeviceCode
         )
 
 router.route('/device')
         .get(oauth.userDeviceReq)
+
+
+router.route('/device/decision')
+        .post(oauth.userDecision)
 
 router.route('/device/token')
         .post(clientIdMWcEx,
@@ -56,7 +60,5 @@ router.route('/device/token')
             oauth.validateDeviceTokenReq,
             oauth.tokenExchange)
 
-router.route('/device/decision')
-        .post(oauth.userDecision)
 
 module.exports = router;

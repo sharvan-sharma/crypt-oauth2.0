@@ -45,6 +45,7 @@ const validateUserClientMW = async (req,res,next) => {
 }
 
 const sendInfoMW = (req,res,next) => {
+    const {scope} = req.body.payload
     Users.findOne({_id:req.body.payload.user_id},(err,user)=>{
         if (err) {
                     res.json({

@@ -3,7 +3,7 @@ const {oauthlogger} = require('../../../src/logger')
 
 const userDecision = (req,res,next) => {
     const {id} = req.query
-    const {decision} = req.body 
+    const {decision,user_code} = req.body 
 
     if(decision === undefined || !['allow','deny'].includes(decision)){
         res.json({
@@ -21,19 +21,23 @@ const userDecision = (req,res,next) => {
                 if(err){
                     res.json({status:500,error_type:'server'})
                 }else{
-                    res.json({status:200,msg:'success'})
-               
-                    try{
-                        const exist = await UserClientMapping.exists({user_id:req.user._id,client_doc_id:dc.client_doc_id})
-                        if(!exist){
-                            await  UserClientMapping.create({
-                                user_id:req.user._id,
-                                client_doc_id:dc.client_doc_id,
-                                scope:dc.scope})
+                    if(dc.user_code === user_code){
+                        res.json({status:200,msg:'success'})
+                
+                        try{
+                            const exist = await UserClientMapping.exists({user_id:req.user._id,client_doc_id:dc.client_doc_id})
+                            if(!exist){
+                                await  UserClientMapping.create({
+                                    user_id:req.user._id,
+                                    client_doc_id:dc.client_doc_id,
+                                    scope:dc.scope})
+                            }
+                        }catch{
+                            oauthlogger.error(`user - error while creating user_client mapping for user !
+                                ${req.user.username} and client ${transaction.client_doc_id}`)
                         }
-                    }catch{
-                        oauthlogger.error(`user - error while creating user_client mapping for user !
-                            ${req.user.username} and client ${transaction.client_doc_id}`)
+                    }else{
+                        res.json({status:500,error_type:'wrong_user_code'})
                     }
                 }
             })

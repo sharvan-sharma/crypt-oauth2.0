@@ -1,5 +1,7 @@
 const  { Forms, AuthCodes} = require('../../../src/config/models')
 const crypto = require('crypto')
+const {isUrl} = require('../../../src/utils/validations')
+const jwt = require('jsonwebtoken')
 
 const clientIdMWcEx = (req,res,next) => {
     const {client_id} = req.body
@@ -26,7 +28,7 @@ const clientIdMWcEx = (req,res,next) => {
     })
 }
 
-const redirectUriMWcEx = ()=>{
+const redirectUriMWcEx = (req,res,next)=>{
     const {redirect_uri} = req.body
 
     if(redirect_uri === undefined || !isUrl(redirect_uri)){
@@ -144,14 +146,14 @@ const codeChallengeMWcEx = (req,res,next) => {
             })
         }else{
             if(auth_code.code_challenge_method === 'plain'){
-                if(code_verifier !== auth.code_challenge){
+                if(code_verifier !== auth_code.code_challenge){
                     res.json({status:423,error_type:'code_verifier_invalid'})
                 }else{
                     next()
                 }
             }else{
                 const hash = crypto.createHash('sha256').update(code_verifier).digest('base64');
-                if(hash !== auth.code_challenge){
+                if(hash !== auth_code.code_challenge){
                     res.json({status:423,error_type:'code_verifier_invalid'})
                 }else{
                     next()

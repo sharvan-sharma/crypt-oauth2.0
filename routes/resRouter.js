@@ -5,6 +5,6 @@ const {validateAccesTokenMW,validateUserClientMW,sendInfoMW} = require('./middle
 router.get('/', (req, res) =>res.json({msg:'resource api'}));
 
 router.route('/userinfo')
-.get(validateAccesTokenMW,validateUserClientMW,sendInfoMW)
+    .get(validateAccesTokenMW,validateUserClientMW,sendInfoMW)
 
 module.exports = router

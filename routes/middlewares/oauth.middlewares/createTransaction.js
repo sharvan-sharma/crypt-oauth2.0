@@ -19,13 +19,15 @@ module.exports = (req,res,next) => {
                 error_description: 'Error occured while processing this Request',
             })
         }else{
-            const urlstring = querystring({
-                transaction_id:transaction._id
+            const urlstring = querystring.stringify({
+                transaction_id:transaction._id.toString()
             })
             if(req.isAuthenticated()){
-                res.status(302).redirect('/oauth/decision'+urlstring)
+                res.json({status:200,urlstring,authenticated:true})
+                // res.status(302).redirect('/oauth/decision'+urlstring)
             }else{
-                res.status(302).redirect('/authapi/login'+urlstring)
+                res.json({status:200,urlstring,authenticated:false})
+                // res.status(302).redirect('/authapi/login'+urlstring)
             }
         }
     })
