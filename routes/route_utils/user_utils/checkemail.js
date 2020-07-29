@@ -1,5 +1,7 @@
 const User = require('../../../src/config/models/user.model')
 
+
+
 function checkEmail(req, res, next) {
 
     if (req.body.email === undefined) {

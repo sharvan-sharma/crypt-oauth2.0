@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken')
 
 function verifyPwdResetEmail(req,res,next){
-    if (!req.body.token) {
+    if (!req.body.token || req.body.token.length < 15) {
         res.json({
             status: 423
         })

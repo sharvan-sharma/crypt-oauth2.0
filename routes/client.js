@@ -20,13 +20,13 @@ router.route('/readallclients')
 
 router.route('/readclient')
 .post(client.VerifyLoggedIn,client.ReadClient)
-
+//
 router.route('/createproject')
 .post(client.VerifyLoggedIn,client.CreateProject)
-
+//
 router.route('/addorigin')
 .post(client.VerifyLoggedIn,client.AddOrigin)
-
+//
 router.route('/addredirect')
 .post(client.VerifyLoggedIn,client.AddRedirect)
 
@@ -48,7 +48,7 @@ router.route('/editredirect')
 router.route('/deleteproject')
 .post(client.VerifyLoggedIn,client.DeleteProject)
 
-router.route('/deleteorigin')
+router.route('/deleteorigin')//
 .post(client.VerifyLoggedIn,client.DeleteOrigin)
 
 router.route('/deleteredirect')

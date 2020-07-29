@@ -30,6 +30,8 @@ app.use(cors({
   credentials: true
 }));
 
+app.use('trust proxy', 1)
+
 app.use(session({
   secret: process.env.SECRET,
   resave: false,
@@ -40,9 +42,12 @@ app.use(session({
     autoRemoveInterval:'1440'
   }),
   cookie:{
-    maxAge:1000*60*60*24
+    maxAge:1000*60*60*24,
+    sameSite:'none',
+    secure:true
   }
-}));
+}))
+
 app.use(userpassport.initialize());
 app.use(userpassport.session());
 app.use(logger('dev'));

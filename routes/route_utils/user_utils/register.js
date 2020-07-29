@@ -69,6 +69,8 @@ function register(req, res, next) {
                 error: 'missing_parameters'
             })
         }
+    }).catch(err=>{
+        res.json({status:423})
     })
 }
 
